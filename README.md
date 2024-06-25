@@ -25,5 +25,6 @@ docker compose up init -d
 ### Test data
 
 ```
-
+username: test-username
+password: test-password
 ```
