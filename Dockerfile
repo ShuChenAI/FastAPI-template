@@ -18,14 +18,14 @@ RUN apt-get update -qq && apt-get upgrade -y -qq && \
     rm -rf /var/lib/apt/lists/*
 
 # Upgrade pip
-RUN pip install --no-cache-dir --upgrade pip
+RUN python3.11 -m pip install --no-cache-dir --upgrade pip
 
 # Copy requirements.txt and install Python dependencies
 COPY ./requirements.txt /requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /requirements.txt
+RUN python3.11 -m pip install --no-cache-dir --upgrade -r /requirements.txt
 
 # Copy the application code to the working directory
 #COPY . /app
 
 # Command to run the application
-CMD ["python3", "-m", "fastapi", "dev", "src/server.py", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python3.11", "-m", "fastapi", "dev", "src/server.py", "--host", "0.0.0.0", "--port", "8000"]
