@@ -1,7 +1,8 @@
+import os
 from typing import Annotated
 
 from fastapi import HTTPException, status, Depends
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, APIKeyHeader
 from sqlalchemy.orm import Session
 
 from src.database import models
@@ -9,7 +10,11 @@ from src.dependencies.basic import get_db
 from src.utils.credentials import verify_password, decode_token
 from src.utils.handler import handle_error, handle_none_value
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login", auto_error=True)
+
+API_KEY_NAME = "X-ADMIN-TOKEN"
+API_KEY = os.getenv("ADMIN_API_KEY", "admin")
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
 
 
 @handle_none_value("User")
@@ -46,3 +51,11 @@ async def get_current_user(
     user = get_user_by_username(db, username)
 
     return user
+
+
+async def get_admin_user(api_key: Annotated[str, Depends(api_key_header)] = None):
+    if api_key != API_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid api key"
+        )
