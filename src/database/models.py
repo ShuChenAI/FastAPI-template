@@ -1,8 +1,9 @@
 from sqlalchemy import Column, String, DateTime, ForeignKey
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from src.database.database import Base
+Base = declarative_base()
 
 
 def lazy_relationship(*args, **kwargs):

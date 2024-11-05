@@ -31,6 +31,15 @@ services:
     networks:
       - shared_network
 
+  redis:
+    image: redis:7.0-alpine
+    restart: always
+    networks:
+      - shared_network
+    volumes:
+      - ./volume/redis_data:/data
+
+
 networks:
   shared_network:
     driver: bridge

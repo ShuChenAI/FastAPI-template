@@ -2,8 +2,9 @@ import os
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+
+from src.database.models import Base
 
 DB_HOST = os.getenv("DB_HOST", "mysql")
 DB_USER = os.getenv("DB_USER", "admin")
@@ -69,14 +70,3 @@ engine = create_engine(
 
 # Create a configured "Session" class
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Create a base class for declarative models
-Base = declarative_base()
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()

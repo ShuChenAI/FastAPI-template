@@ -9,3 +9,4 @@ passlib
 bcrypt
 email-validator
 python-ulid[pydantic]
+redis[hiredis]
