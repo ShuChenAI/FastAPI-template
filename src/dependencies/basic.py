@@ -7,8 +7,8 @@ from src.database.database import SessionLocal
 
 def get_redis_client() -> Redis:
     r = Redis(
-        host=os.getenv('REDIS_HOST'),
-        port=int(os.getenv('REDIS_PORT')),
+        host=os.getenv('REDIS_HOST', 'redis'),
+        port=int(os.getenv('REDIS_PORT', '6379')),
         decode_responses=True
     )
     try:
