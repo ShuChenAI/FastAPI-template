@@ -13,9 +13,18 @@ services:
       - ./src:/run/src
     environment:
       - PYTHONPATH=/run
+      - DEV=true
     command: "python3.11 -m fastapi run src/server.py --host 0.0.0.0 --port 8000"
     networks:
       - shared_network
+
+  redis:
+    image: redis:7.0-alpine
+    restart: always
+    networks:
+      - shared_network
+    volumes:
+      - ./volume/redis_data:/data
 
   mysql:
     image: mysql:8.3
@@ -31,14 +40,13 @@ services:
     networks:
       - shared_network
 
-  redis:
-    image: redis:7.0-alpine
+  adminer:
+    image: adminer
     restart: always
+    ports:
+      - "8001:8080"
     networks:
       - shared_network
-    volumes:
-      - ./volume/redis_data:/data
-
 
 networks:
   shared_network:
