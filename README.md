@@ -18,9 +18,7 @@ This is a template for a FastAPI backend project. It includes a basic structure 
 
 ## Init Database
 
-```bash
-docker compose up init -d
-```
+See `http://localhost:8000/renewDB` to init the database.
 
 ### Test data
 
