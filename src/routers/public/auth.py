@@ -4,8 +4,7 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from src.database import models
-from src.dependencies.auth import get_current_user, authenticate_user
+from src.dependencies.auth import authenticate_user
 from src.dependencies.basic import get_db
 from src.schemas.basic import Token
 from src.utils.credentials import create_access_token
@@ -22,10 +21,3 @@ async def login(
     token = create_access_token({"sub": user.account[0].username})
 
     return Token(access_token=token, token_type="bearer")
-
-
-@router.get('/me')
-async def me(
-        user: models.User = Depends(get_current_user)
-):
-    return user.__dict__

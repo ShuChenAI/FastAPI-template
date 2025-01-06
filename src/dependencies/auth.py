@@ -10,7 +10,7 @@ from src.dependencies.basic import get_db
 from src.utils.credentials import verify_password, decode_token
 from src.utils.handler import handle_error, handle_none_value
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login", auto_error=True)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/public/auth/login", auto_error=True)
 
 API_KEY_NAME = "X-ADMIN-TOKEN"
 API_KEY = os.getenv("ADMIN_API_KEY", "admin")

@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse
 from starlette.requests import Request
 
 from src.dependencies.auth import get_admin_user
-from src.routers.auth import router as auth_router
+from src.routers.server import router
 from src.schemas.basic import TextOnly
 
 app = FastAPI(
@@ -16,7 +16,8 @@ app = FastAPI(
     contact={
         "name": "Author Name",
         "email": "example@exmaple.com",
-    }
+    },
+    swagger_ui_parameters={'docExpansion': 'none'}
 )
 
 app.add_middleware(
@@ -27,7 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth_router, prefix="/auth", tags=["auth"])
+app.include_router(router)
 
 
 @app.get("/", response_model=TextOnly)

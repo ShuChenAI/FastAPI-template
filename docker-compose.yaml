@@ -11,10 +11,13 @@ services:
       - .env
     volumes:
       - ./src:/run/src
+      - ./alembic:/run/alembic
+      - ./alembic.ini:/run/alembic.ini
+      - ./alembic_check.sh:/run/alembic_check.sh
     environment:
       - PYTHONPATH=/run
       - DEV=true
-    command: "python3.11 -m fastapi run src/server.py --host 0.0.0.0 --port 8000"
+    command: "python3.11 -m fastapi run src/server.py --host 0.0.0.0 --port 8000 --reload"
     networks:
       - shared_network
 
