@@ -1,15 +1,14 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *__pycache__/
-volume/
+
 *.py[cod]
 *$py.class
 
+volume/
+
 # C extensions
 *.so
-
-*.env
-.env
 
 # Distribution / packaging
 .Python
@@ -99,6 +98,12 @@ ipython_config.py
 #   install all needed dependencies.
 #Pipfile.lock
 
+# UV
+#   Similar to Pipfile.lock, it is generally recommended to include uv.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#uv.lock
+
 # poetry
 #   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
 #   This is especially recommended for binary packages to ensure reproducibility, and is more
@@ -164,4 +169,7 @@ cython_debug/
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-.idea/
+#.idea/
+
+# PyPI configuration file
+.pypirc
