@@ -1,11 +1,16 @@
 import os
+import subprocess
+from typing import Annotated
 
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+from sqlalchemy.orm import Session
+from sqlalchemy.sql import text
 from starlette.requests import Request
 
 from src.dependencies.auth import get_admin_user
+from src.dependencies.basic import get_db
 from src.routers.server import router
 from src.schemas.basic import TextOnly
 
@@ -72,3 +77,23 @@ if os.getenv('DEV', 'false') == 'true':
         create_all_tables(engine)
         add_test_data()
         return TextOnly(text="Database Renewed")
+
+
+@app.post('/alembic', dependencies=[Depends(get_admin_user)])
+async def alembic(
+        db: Annotated[Session, Depends(get_db)]
+):
+    # remove alembic_version table
+    db.execute(text("DROP TABLE IF EXISTS alembic_version"))
+    db.commit()
+
+    # execute `bash /run/run_alembic.sh` and return the output
+    process = subprocess.Popen(['/bin/bash', '/run/run_alembic.sh'],
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    output, error = process.communicate()
+
+    return {
+        "output": output.decode('utf-8').split('\n'),
+        "error": error.decode('utf-8').split('\n')
+    }
