@@ -605,6 +605,417 @@ def custom_swagger_ui_html(*args, **kwargs):
         font-size: 13px !important;
         border: 1px solid #334155 !important;
     }
+
+    /* ===== AUTHORIZATION PANEL STYLING ===== */
+    
+    /* Authorization Dialog Styling */
+    .swagger-ui .dialog-ux .modal-ux {
+        background: linear-gradient(to bottom, #1a233b, #141c36) !important;
+        border: none !important;
+        border-radius: 12px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+        overflow: hidden !important;
+        max-width: 650px !important;
+        width: 90% !important;
+    }
+
+    .swagger-ui .dialog-ux .modal-ux-header {
+        background: linear-gradient(to right, #1e2b45, #141c36) !important;
+        border-bottom: 1px solid #3b4880 !important;
+        padding: 16px 24px !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .swagger-ui .dialog-ux .modal-ux-header h3 {
+        color: #f8fafc !important;
+        font-weight: 600 !important;
+        font-size: 18px !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .swagger-ui .dialog-ux .modal-ux-content {
+        background-color: #171f38 !important;
+        color: #f8fafc !important;
+        padding: 24px !important;
+    }
+
+    /* Authorization Form Elements */
+    .swagger-ui .auth-container {
+        padding: 10px !important;
+    }
+
+    .swagger-ui .auth-container h4,
+    .swagger-ui .auth-container p,
+    .swagger-ui .auth-container label,
+    .swagger-ui .auth-container .footnote {
+        color: #f8fafc !important;
+    }
+
+    .swagger-ui .auth-container h4 {
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        margin-bottom: 16px !important;
+        padding-bottom: 8px !important;
+        border-bottom: 1px solid #3b4880 !important;
+        color: #60a5fa !important;
+    }
+
+    .swagger-ui .auth-container label {
+        font-weight: 600 !important;
+        margin-bottom: 6px !important;
+        display: block !important;
+        color: #e2e8f0 !important;
+    }
+
+    .swagger-ui .auth-container input[type=text],
+    .swagger-ui .auth-container input[type=password] {
+        background-color: #242c46 !important;
+        color: #f8fafc !important;
+        border: 1px solid #4b5399 !important;
+        border-radius: 6px !important;
+        padding: 10px 12px !important;
+        width: 100% !important;
+        font-weight: 500 !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        transition: all 0.2s ease !important;
+        font-size: 14px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .swagger-ui .auth-container input[type=text]:focus,
+    .swagger-ui .auth-container input[type=password]:focus {
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3) !important;
+        outline: none !important;
+    }
+
+    .swagger-ui .auth-btn-wrapper {
+        display: flex !important;
+        justify-content: flex-end !important;
+        padding: 16px 0 !important;
+        margin-top: 10px !important;
+        border-top: 1px solid #3b4880 !important;
+    }
+
+    .swagger-ui .auth-btn-wrapper .btn {
+        background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 6px !important;
+        padding: 10px 20px !important;
+        margin-left: 12px !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3) !important;
+    }
+
+    .swagger-ui .auth-btn-wrapper .btn:hover {
+        background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4) !important;
+    }
+
+    .swagger-ui .auth-btn-wrapper .btn.modal-btn-cancel {
+        background: linear-gradient(to bottom, #4b5563, #374151) !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .swagger-ui .auth-btn-wrapper .btn.modal-btn-cancel:hover {
+        background: linear-gradient(to bottom, #64748b, #4b5563) !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    /* Authorize button at the top */
+    .swagger-ui .authorization__btn {
+        background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 6px !important;
+        padding: 8px 16px !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3) !important;
+    }
+
+    .swagger-ui .authorization__btn:hover {
+        background: linear-gradient(135deg, #1d4ed8, #2563eb) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4) !important;
+    }
+
+    /* Lock icon */
+    .swagger-ui .unlocked,
+    .swagger-ui .locked {
+        opacity: 1 !important;
+    }
+
+    /* OAuth scope section */
+    .swagger-ui .scopes {
+        padding: 16px !important;
+        background-color: #242c46 !important;
+        border-radius: 8px !important;
+        margin-top: 12px !important;
+        border: 1px solid #3b4880 !important;
+    }
+
+    .swagger-ui .scope-def {
+        padding: 12px !important;
+        border-bottom: 1px solid #3b4880 !important;
+    }
+
+    .swagger-ui .scope-def:last-child {
+        border-bottom: none !important;
+    }
+
+    .swagger-ui .scopes h2 {
+        color: #f8fafc !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        margin-bottom: 12px !important;
+    }
+
+    .swagger-ui .scopes .scope-name {
+        color: #60a5fa !important;
+        font-family: 'Menlo', 'Monaco', 'Consolas', monospace !important;
+        font-size: 14px !important;
+    }
+
+    .swagger-ui .scopes .scope-description {
+        color: #e2e8f0 !important;
+        font-size: 14px !important;
+    }
+    
+    /* Close button */
+    .swagger-ui .dialog-ux .modal-ux-header .close-modal {
+        transition: all 0.2s ease !important;
+    }
+    
+    .swagger-ui .dialog-ux .modal-ux-header .close-modal svg {
+        height: 20px !important;
+        width: 20px !important;
+    }
+    
+    .swagger-ui .dialog-ux .modal-ux-header .close-modal:hover {
+        transform: scale(1.2) !important;
+    }
+    
+    /* Security definitions container */
+    .swagger-ui .auth-container .security-definition-reference {
+        margin-bottom: 20px !important;
+        background-color: #1a233b !important;
+        padding: 16px !important;
+        border-radius: 8px !important;
+        border: 1px solid #3b4880 !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    /* Scheme name */
+    .swagger-ui .auth-container .security-definition-reference .operation-security-definition {
+        font-size: 15px !important;
+        font-weight: 600 !important;
+        color: #60a5fa !important;
+        margin-bottom: 8px !important;
+    }
+    
+    /* Footer notes */
+    .swagger-ui .auth-container .footnote {
+        margin-top: 16px !important;
+        font-size: 13px !important;
+        color: #94a3b8 !important;
+        line-height: 1.5 !important;
+    }
+    
+    /* Authentication indicator icons in the UI */
+    .swagger-ui .authorization__btn .svg-assets {
+        fill: #f8fafc !important;
+        color: #f8fafc !important;
+    }
+    
+    /* Improve the appearance of lock icons in operation summary */
+    .swagger-ui .opblock-summary-control .authorization__btn {
+        padding: 4px !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        margin-right: 5px !important;
+    }
+    
+    .swagger-ui .opblock-summary-control .authorization__btn svg {
+        height: 18px !important;
+        width: 18px !important;
+    }
+    
+    /* Unlocked icon */
+    .swagger-ui .unlocked svg {
+        fill: #94a3b8 !important;
+    }
+    
+    /* Locked/authenticated icon */
+    .swagger-ui .locked svg {
+        fill: #34d399 !important; /* Green for authenticated */
+    }
+    
+    /* Add a subtle glow to authenticated endpoints */
+    .swagger-ui .opblock-summary-control .locked {
+        position: relative !important;
+    }
+    
+    .swagger-ui .opblock-summary-control .locked::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 22px;
+        height: 22px;
+        background: radial-gradient(circle, rgba(52, 211, 153, 0.3) 0%, rgba(52, 211, 153, 0) 70%);
+        border-radius: 50%;
+        z-index: -1;
+    }
+    
+    /* Highlight authenticated endpoints differently */
+    .swagger-ui .opblock.opblock-authenticated {
+        border-left-width: 4px !important;
+    }
+    
+    /* Adding a badge for authenticated endpoints in summary */
+    .swagger-ui .opblock-summary-control .locked::before {
+        content: 'Auth';
+        position: absolute;
+        top: -12px;
+        right: -12px;
+        background-color: #059669;
+        color: white;
+        font-size: 9px;
+        font-weight: bold;
+        padding: 2px 4px;
+        border-radius: 4px;
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.2s ease;
+    }
+    
+    .swagger-ui .opblock-summary-control .locked:hover::before {
+        opacity: 1;
+        transform: scale(1);
+    }
+    
+    /* ===== ADDITIONAL AUTH CONTROL ELEMENTS ===== */
+    
+    /* Styling for checkbox and radio inputs */
+    .swagger-ui .auth-container input[type=checkbox],
+    .swagger-ui .auth-container input[type=radio] {
+        position: relative !important;
+        width: 18px !important;
+        height: 18px !important;
+        margin-right: 8px !important;
+        cursor: pointer !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        border: 2px solid #4b5399 !important;
+        border-radius: 4px !important;
+        background-color: #242c46 !important;
+        transition: all 0.2s ease !important;
+        vertical-align: middle !important;
+    }
+    
+    .swagger-ui .auth-container input[type=checkbox]:checked,
+    .swagger-ui .auth-container input[type=radio]:checked {
+        background-color: #3b82f6 !important;
+        border-color: #3b82f6 !important;
+    }
+    
+    .swagger-ui .auth-container input[type=checkbox]:checked::before,
+    .swagger-ui .auth-container input[type=radio]:checked::before {
+        content: '✓' !important;
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        color: #ffffff !important;
+        font-size: 12px !important;
+        font-weight: bold !important;
+    }
+    
+    .swagger-ui .auth-container input[type=checkbox]:focus,
+    .swagger-ui .auth-container input[type=radio]:focus {
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4) !important;
+    }
+    
+    /* Radio buttons should be round */
+    .swagger-ui .auth-container input[type=radio] {
+        border-radius: 50% !important;
+    }
+    
+    .swagger-ui .auth-container input[type=radio]:checked::before {
+        content: '' !important;
+        width: 8px !important;
+        height: 8px !important;
+        border-radius: 50% !important;
+        background-color: #ffffff !important;
+    }
+    
+    /* Select dropdown styling */
+    .swagger-ui .auth-container select {
+        background-color: #242c46 !important;
+        color: #f8fafc !important;
+        border: 1px solid #4b5399 !important;
+        border-radius: 6px !important;
+        padding: 10px 12px !important;
+        width: 100% !important;
+        font-weight: 500 !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        transition: all 0.2s ease !important;
+        font-size: 14px !important;
+        margin-bottom: 16px !important;
+        cursor: pointer !important;
+        appearance: none !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 10px center !important;
+        background-size: 20px !important;
+        padding-right: 32px !important;
+    }
+    
+    .swagger-ui .auth-container select:focus {
+        outline: none !important;
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3) !important;
+    }
+    
+    .swagger-ui .auth-container select option {
+        background-color: #1a233b !important;
+        color: #f8fafc !important;
+        padding: 10px !important;
+    }
+    
+    /* Custom auth panel subtitles */
+    .swagger-ui .auth-container .subtitle {
+        color: #94a3b8 !important;
+        font-size: 13px !important;
+        margin-bottom: 15px !important;
+        line-height: 1.5 !important;
+    }
+    
+    /* Auth panel description text */
+    .swagger-ui .auth-container p {
+        color: #e2e8f0 !important;
+        line-height: 1.6 !important;
+        margin-bottom: 12px !important;
+    }
+    
+    /* Apply button special styling */
+    .swagger-ui .auth-btn-wrapper .btn.authorize {
+        background: linear-gradient(135deg, #059669, #10b981) !important;
+        box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3) !important;
+    }
+    
+    .swagger-ui .auth-btn-wrapper .btn.authorize:hover {
+        background: linear-gradient(135deg, #047857, #059669) !important;
+        box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4) !important;
+    }
     </style>
 
     <style id="swagger-light-theme" disabled>
