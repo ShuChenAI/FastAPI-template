@@ -1192,6 +1192,101 @@ Resource Count: ${performance.getEntriesByType('resource').length}
 
     # Insert the custom CSS in the head and JavaScript before the closing body tag
     modified_content = swagger_ui_content.replace('</head>', f'{dark_mode_css}</head>')
-    modified_content = modified_content.replace('</body>', f'{theme_toggle_js}</body>')
+    
+    # Add hash navigation JavaScript to handle direct endpoint access
+    hash_navigation_js = """
+    <script>
+    // Function to navigate to a specific endpoint based on URL hash
+    window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            // Check if there's a hash in the URL
+            if (window.location.hash && window.location.hash.length > 1) {
+                try {
+                    // Decode the hash
+                    const hash = decodeURIComponent(window.location.hash.substring(1));
+                    
+                    console.log('Navigating to endpoint:', hash);
+                    
+                    // Split the hash to get tag and operation
+                    // Format is typically: /Tag/operation_id
+                    const parts = hash.split('/');
+                    
+                    if (parts.length >= 2) {
+                        // Get the tag name (parts[1]) and operation ID (parts[2])
+                        const tagName = parts[1];
+                        const operationId = parts.length > 2 ? parts[2] : null;
+                        
+                        console.log('Looking for tag:', tagName, 'operation:', operationId);
+                        
+                        // Find and expand the tag
+                        const tags = document.querySelectorAll('.opblock-tag');
+                        for (const tag of tags) {
+                            const tagText = tag.querySelector('span')?.textContent.trim();
+                            
+                            if (tagText && tagText === tagName) {
+                                // If tag is collapsed, expand it by clicking
+                                if (tag.classList.contains('is-collapsed')) {
+                                    tag.click();
+                                }
+                                
+                                // If we have an operation ID, find and expand it
+                                if (operationId) {
+                                    // Small delay to allow tag expansion
+                                    setTimeout(function() {
+                                        // Find the operation under this tag
+                                        const operations = document.querySelectorAll('.opblock');
+                                        
+                                        for (const op of operations) {
+                                            // Check if this operation matches our ID
+                                            // Try different ways to match the operation
+                                            const opId = op.id;
+                                            const opPath = op.querySelector('.opblock-summary-path')?.textContent.trim();
+                                            const opDesc = op.querySelector('.opblock-summary-description')?.textContent.trim();
+                                            
+                                            if ((opId && opId.includes(operationId)) || 
+                                                (opDesc && opDesc.includes(operationId)) ||
+                                                (opPath && operationId.includes(opPath.split('/').pop()))) {
+                                                
+                                                // Scroll to this operation
+                                                op.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                
+                                                // If operation is collapsed, expand it
+                                                if (!op.classList.contains('is-open')) {
+                                                    const opSummary = op.querySelector('.opblock-summary');
+                                                    if (opSummary) {
+                                                        opSummary.click();
+                                                    }
+                                                }
+                                                
+                                                // Highlight this operation
+                                                op.style.boxShadow = '0 0 8px #3b82f6';
+                                                setTimeout(() => {
+                                                    op.style.boxShadow = '';
+                                                }, 2000);
+                                                
+                                                break;
+                                            }
+                                        }
+                                    }, 300);
+                                } else {
+                                    // If no operation ID, just scroll to the tag
+                                    tag.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                }
+                                
+                                break;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error navigating to endpoint:', e);
+                }
+            }
+        }, 500); // Give Swagger UI time to initialize
+    });
+    </script>
+    """
+    
+    # Combine both scripts and insert them before the closing body tag
+    modified_content = modified_content.replace('</body>', f'{theme_toggle_js}{hash_navigation_js}</body>')
 
     return HTMLResponse(content=modified_content, status_code=200)
