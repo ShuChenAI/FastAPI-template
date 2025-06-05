@@ -7,6 +7,8 @@ def custom_swagger_ui_html(*args, **kwargs):
     swagger_ui = get_swagger_ui_html(*args, **kwargs)
     swagger_ui_content = swagger_ui.body.decode()
 
+    return HTMLResponse(content=swagger_ui_content, status_code=200)
+
     # Inject custom CSS for dark mode with modern styling
     dark_mode_css = """
     <style id="swagger-dark-theme">
@@ -1192,7 +1194,7 @@ Resource Count: ${performance.getEntriesByType('resource').length}
 
     # Insert the custom CSS in the head and JavaScript before the closing body tag
     modified_content = swagger_ui_content.replace('</head>', f'{dark_mode_css}</head>')
-    
+
     # Add hash navigation JavaScript to handle direct endpoint access
     hash_navigation_js = """
     <script>
@@ -1285,7 +1287,7 @@ Resource Count: ${performance.getEntriesByType('resource').length}
     });
     </script>
     """
-    
+
     # Combine both scripts and insert them before the closing body tag
     modified_content = modified_content.replace('</body>', f'{theme_toggle_js}{hash_navigation_js}</body>')
 
