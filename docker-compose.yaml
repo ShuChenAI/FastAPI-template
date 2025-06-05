@@ -1,6 +1,7 @@
 services:
 
   backend:
+    container_name: template-backend
     restart: always
     build:
       context: .
@@ -8,7 +9,7 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - .env
+      - example.env
     volumes:
       - ./src:/run/src
       - ./alembic:/run/alembic
@@ -22,6 +23,7 @@ services:
       - shared_network
 
   redis:
+    container_name: template-redis
     image: redis:7.0-alpine
     restart: always
     networks:
@@ -30,6 +32,7 @@ services:
       - ./volume/redis_data:/data
 
   mysql:
+    container_name: template-mysql
     image: mysql:8.3
     restart: always
     environment:
@@ -44,12 +47,31 @@ services:
       - shared_network
 
   adminer:
+    container_name: template-adminer
     image: adminer
     restart: always
     ports:
       - "8001:8080"
     networks:
       - shared_network
+
+  minio:
+    image: quay.io/minio/minio
+    container_name: template-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./volume/minio_data:/data
+      - ./init-minio.sh:/init-minio.sh:ro
+      - ./minio-entrypoint.sh:/minio-entrypoint.sh:ro
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=admin1234
+    networks: 
+      - shared_network
+    entrypoint: /bin/sh
+    command: ["/minio-entrypoint.sh"]
 
 networks:
   shared_network:

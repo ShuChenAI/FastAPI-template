@@ -13,8 +13,11 @@ from src.utils.handler import handle_error, handle_none_value
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/public/auth/login", auto_error=True)
 
 API_KEY = os.getenv("ADMIN_API_KEY", "admin")
+SUPER_ADMIN_API_KEY = os.getenv("SUPER_ADMIN_API_KEY", "admin.root")
+
 api_key_header = APIKeyHeader(name="X-ADMIN-TOKEN", auto_error=True, scheme_name="X-ADMIN-TOKEN")
-super_admin_api_key_header = APIKeyHeader(name="X-SUPER-ADMIN-TOKEN", auto_error=True, scheme_name="X-SUPER-ADMIN-TOKEN")
+super_admin_api_key_header = APIKeyHeader(name="X-SUPER-ADMIN-TOKEN", auto_error=True,
+                                          scheme_name="X-SUPER-ADMIN-TOKEN")
 
 
 @handle_none_value("User")
@@ -62,7 +65,7 @@ async def get_admin_user(api_key: Annotated[str, Depends(api_key_header)] = None
 
 
 async def get_super_admin_user(api_key: Annotated[str, Depends(super_admin_api_key_header)] = None):
-    if api_key != "admin.root":
+    if api_key != SUPER_ADMIN_API_KEY:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid api key"
