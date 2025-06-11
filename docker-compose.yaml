@@ -46,6 +46,28 @@ services:
     networks:
       - shared_network
 
+  mysql-backup:
+    container_name: template-mysql-backup
+    build:
+      context: ./mysql-backup
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: template_db
+      BACKUP_SCHEDULE: "0 2 * * *"  # Daily at 2 AM
+      BACKUP_RETENTION_DAYS: 7       # Keep backups for 7 days
+      BACKUP_ON_STARTUP: "true"      # Create backup when container starts
+    volumes:
+      - ./volume/mysql_backups:/backups
+    networks:
+      - shared_network
+
   adminer:
     container_name: template-adminer
     image: adminer
