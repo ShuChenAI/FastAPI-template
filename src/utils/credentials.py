@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta, timezone
 
 from jose import jwt
-from passlib.context import CryptContext
+# from passlib.context import CryptContext
+from pwdlib import PasswordHash
 
 from src.utils.handler import handle_jwt_error
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = PasswordHash.recommended() #CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 SECRET_KEY = "c1b3e4b3-4b3c-4b3e-8b3c-4b3e4b3c4b3e"
 ALGORITHM = "HS256"

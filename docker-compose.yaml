@@ -11,14 +11,17 @@ services:
     env_file:
       - example.env
     volumes:
-      - ./src:/run/src
-      - ./alembic:/run/alembic
-      - ./alembic.ini:/run/alembic.ini
-      - ./run_alembic.sh:/run/run_alembic.sh
+      - ./src:/app/src
+      - ./alembic:/app/alembic
+      - ./alembic.ini:/app/alembic.ini
+      - ./run_alembic.sh:/app/run_alembic.sh
     environment:
-      - PYTHONPATH=/run
+      - PYTHONPATH=/app
       - DEV=true
-    command: "python3.11 -m fastapi run src/server.py --host 0.0.0.0 --port 8000 --reload"
+    depends_on:
+      - redis
+      - mysql
+      - minio
     networks:
       - shared_network
 
@@ -30,6 +33,11 @@ services:
       - shared_network
     volumes:
       - ./volume/redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mysql:
     container_name: template-mysql
@@ -45,28 +53,11 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     networks:
       - shared_network
-
-  mysql-backup:
-    container_name: template-mysql-backup
-    build:
-      context: ./mysql-backup
-      dockerfile: Dockerfile
-    restart: always
-    depends_on:
-      - mysql
-    environment:
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-      MYSQL_DATABASE: template_db
-      BACKUP_SCHEDULE: "0 2 * * *"  # Daily at 2 AM
-      BACKUP_RETENTION_DAYS: 7       # Keep backups for 7 days
-      BACKUP_ON_STARTUP: "true"      # Create backup when container starts
-    volumes:
-      - ./volume/mysql_backups:/backups
-    networks:
-      - shared_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   adminer:
     container_name: template-adminer
@@ -74,6 +65,8 @@ services:
     restart: always
     ports:
       - "8001:8080"
+    depends_on:
+      - mysql
     networks:
       - shared_network
 
@@ -94,6 +87,11 @@ services:
       - shared_network
     entrypoint: /bin/sh
     command: ["/minio-entrypoint.sh"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 networks:
   shared_network:
