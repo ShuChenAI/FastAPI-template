@@ -1,22 +1,7 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey, Table
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String, DateTime, ForeignKey
 from sqlalchemy.sql import func
 
-Base = declarative_base()
-
-
-def lazy_relationship(*args, **kwargs):
-    return relationship(*args, uselist=True, **kwargs)
-
-
-user_blob_association = Table(
-    "user_chatrooms",
-    Base.metadata,
-    Column("user_id", String(36), ForeignKey("users.id"), primary_key=True),
-    Column("blob_id", String(36), ForeignKey("blobs.id"), primary_key=True),
-)
-
+from src.database.models.base import Base, lazy_relationship, user_blob_association
 
 class User(Base):
     __tablename__ = "users"

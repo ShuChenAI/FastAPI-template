@@ -3,7 +3,6 @@ import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
-
 from src.database.models import Base
 
 DB_HOST = os.getenv("DB_HOST", "mysql")
@@ -59,14 +58,25 @@ SQLALCHEMY_DATABASE_URL = get_database_url(DB_USER, DB_PASS, DB_HOST, DB_PORT, D
 # Create the database if it doesn't exist
 create_database_if_not_exists(TRIAL_URL, DB_NAME)
 
-# Create engine with connection pooling options
+# Pool configuration (tunable via environment for different deployments / RDS Proxy)
+POOL_SIZE = int(os.getenv("DB_POOL_SIZE", "20"))
+MAX_OVERFLOW = int(os.getenv("DB_MAX_OVERFLOW", "30"))
+POOL_TIMEOUT = int(os.getenv("DB_POOL_TIMEOUT", "30"))
+POOL_RECYCLE = int(os.getenv("DB_POOL_RECYCLE", "600"))  # recycle before RDS idle closes
+POOL_USE_LIFO = os.getenv("DB_POOL_USE_LIFO", "true").lower() == "true"
+CONNECT_TIMEOUT = int(os.getenv("DB_CONNECT_TIMEOUT", "10"))
+
+# Create engine with connection pooling options better suited for AWS RDS Proxy
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
-    pool_pre_ping=True,
-    pool_recycle=1800,
-    pool_size=20,  # Adjust pool size as needed
-    max_overflow=10  # Adjust as needed
+    pool_pre_ping=True,                # validate connections (essential behind proxies)
+    pool_recycle=POOL_RECYCLE,
+    pool_size=POOL_SIZE,
+    max_overflow=MAX_OVERFLOW,
+    pool_timeout=POOL_TIMEOUT,
+    pool_use_lifo=POOL_USE_LIFO,
+    pool_reset_on_return="rollback",
+    connect_args={"connect_timeout": CONNECT_TIMEOUT}
 )
-
 # Create a configured "Session" class
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
