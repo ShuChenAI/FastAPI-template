@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+from typing import Optional
 
 
 class ColoredFormatter(logging.Formatter):
@@ -34,7 +35,20 @@ class ColoredFormatter(logging.Formatter):
         return super().format(record)
 
 
-def wrap_logger(logger: logging.Logger, file_name: str = None):
+def wrap_logger(logger: logging.Logger, file_name: Optional[str] = None):
+    """
+    Wraps a logger with custom formatting.
+    
+    Sentry integration is automatically enabled globally via LoggingIntegration in server.py.
+    All logs from this logger will be automatically captured by Sentry if configured.
+    
+    Args:
+        logger: The logger instance to wrap
+        file_name: Optional file path to write logs to
+    
+    Returns:
+        The configured logger instance
+    """
     # Check if handlers already exist to avoid duplicates
     if logger.handlers:
         return logger

@@ -13,3 +13,4 @@ redis[hiredis]
 boto3
 alembic
 pwdlib[argon2]
+sentry-sdk[fastapi]
