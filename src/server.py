@@ -26,6 +26,7 @@ if sentry_dsn:
         traces_sample_rate=float(os.environ.get("SENTRY_TRACES_SAMPLE_RATE", "1.0")),
         profiles_sample_rate=float(os.environ.get("SENTRY_PROFILES_SAMPLE_RATE", "1.0")),
         enable_tracing=True,
+        enable_logs=True,
         profile_lifecycle="trace",
         integrations=[
             # FastAPI Integration - captures request/response data and errors

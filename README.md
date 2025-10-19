@@ -11,6 +11,7 @@ A production-ready FastAPI backend template with Docker, MySQL, Redis, MinIO (S3
 - [Project Structure](#project-structure)
 - [Configuration](#configuration)
 - [Services](#services)
+- [Sentry Integration](#sentry-integration)
 - [Authentication & Authorization](#authentication--authorization)
 - [Database Management](#database-management)
 - [API Documentation](#api-documentation)
@@ -25,6 +26,7 @@ A production-ready FastAPI backend template with Docker, MySQL, Redis, MinIO (S3
 - **MySQL 8.3** - Relational database with Adminer GUI
 - **Redis 7.0** - In-memory data store for caching and sessions
 - **MinIO** - S3-compatible object storage for file uploads
+- **Sentry Integration** - Error tracking, performance monitoring, and logging
 - **Alembic** - Database migration tool
 - **JWT Authentication** - OAuth2 with Bearer tokens
 - **Multi-level Authorization** - User, Admin, and Super Admin roles
@@ -161,6 +163,12 @@ MINIO_DNS_URL=http://localhost:9000
 # API Keys
 ADMIN_API_KEY=admin        # Admin API key
 SUPER_ADMIN_API_KEY=admin.root  # Super Admin API key
+
+# Sentry Configuration (Optional - Get DSN from sentry.io)
+SENTRY_DSN=                # Your Sentry DSN
+SENTRY_ENVIRONMENT=development
+SENTRY_TRACES_SAMPLE_RATE=1.0
+SENTRY_PROFILES_SAMPLE_RATE=1.0
 ```
 
 ## Services
@@ -208,6 +216,56 @@ Web-based database management tool:
 - **Port**: 8001
 - **Supported Databases**: MySQL, PostgreSQL, SQLite, MS SQL
 - **Login with**: Server: mysql, Username: admin, Password: admin1234
+
+## Sentry Integration
+
+The template includes comprehensive Sentry integration for error tracking, performance monitoring, and logging. Sentry is **optional** and disabled by default.
+
+### Features
+
+- **Error Tracking** - Automatic capture of unhandled exceptions
+- **Performance Monitoring** - Track API endpoint, database, and Redis performance
+- **Logging Integration** - All ERROR+ logs sent to Sentry as events
+- **Request Context** - Full request details with every error
+- **Distributed Tracing** - Track requests across your microservices
+
+### Integrations Included
+
+1. **FastAPI Integration** - Request/response tracking and error capture
+2. **SQLAlchemy Integration** - Database query monitoring
+3. **Redis Integration** - Redis operation tracking
+4. **Logging Integration** - Automatic log capture
+5. **Threading Integration** - Background thread error tracking
+
+### Quick Setup
+
+1. **Create a Sentry account** at [sentry.io](https://sentry.io) (free tier available)
+2. **Create a FastAPI project** and copy your DSN
+3. **Add to your `.env` file:**
+   ```env
+   SENTRY_DSN=https://your-sentry-dsn@sentry.io/your-project-id
+   ```
+4. **Restart the application:**
+   ```bash
+   docker-compose restart backend
+   ```
+
+### Testing Sentry
+
+Test endpoints are available at:
+- `/test-sentry-error` - Triggers a test error
+- `/test-sentry-logging` - Tests logging integration
+- `/test-sentry-capture` - Tests manual message capture
+
+### Configuration
+
+The application monitors:
+- All API endpoint performance
+- Database query execution times
+- Redis operation latency
+- Application logs (ERROR+ as events, INFO+ as breadcrumbs)
+
+For production best practices, advanced configuration, and detailed documentation, see **[SENTRY.md](SENTRY.md)**.
 
 ## Authentication & Authorization
 
@@ -432,6 +490,12 @@ url = f"http://localhost:9000/template-bucket/{file_key}"
    AWS_REGION=us-east-1
    ADMIN_API_KEY=strong-random-key
    SUPER_ADMIN_API_KEY=very-strong-random-key
+   
+   # Sentry for production monitoring
+   SENTRY_DSN=your-production-dsn
+   SENTRY_ENVIRONMENT=production
+   SENTRY_TRACES_SAMPLE_RATE=0.1  # 10% sampling to reduce costs
+   SENTRY_PROFILES_SAMPLE_RATE=0.1
    ```
 
 2. **Update docker-compose.yaml:**
@@ -445,6 +509,8 @@ url = f"http://localhost:9000/template-bucket/{file_key}"
    - Implement rate limiting
    - Add request validation
    - Use environment-specific configurations
+   - Configure Sentry to filter sensitive data (see [SENTRY.md](SENTRY.md))
+   - Reduce Sentry sampling rates in production to control costs
 
 ### Deployment Options
 
