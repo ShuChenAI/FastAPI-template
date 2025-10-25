@@ -45,7 +45,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # shellcheck disable=SC2164
-cd /run
+cd /app
 
 # Run revision generation if not skipped
 if [ "$SKIP_REVISION" = false ]; then
