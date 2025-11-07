@@ -18,9 +18,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install Python dependencies
+# Install uv for faster package installation
+RUN pip install --no-cache-dir uv
+
+# Copy requirements and install Python dependencies using uv
 COPY requirements.txt .
-RUN pip install --user --no-warn-script-location -r requirements.txt
+RUN uv pip install --system --no-cache -r requirements.txt
 
 # Stage 2: Runtime stage
 FROM python:3.11-slim
@@ -28,8 +31,7 @@ FROM python:3.11-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PYTHONPATH="/app" \
-    PATH="/home/appuser/.local/bin:${PATH}"
+    PYTHONPATH="/app"
 
 # Install runtime dependencies only
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -44,8 +46,9 @@ RUN useradd -m -u 1000 appuser && \
 
 WORKDIR /app
 
-# Copy Python packages from builder
-COPY --from=builder --chown=appuser:appuser /root/.local /home/appuser/.local
+# Copy Python packages from builder (system site-packages)
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 # Copy application code
 COPY --chown=appuser:appuser . /app
@@ -55,7 +58,7 @@ USER appuser
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+    CMD curl -f http://localhost:8000/healthz || exit 1
 
 # Expose the application port
 EXPOSE 8000

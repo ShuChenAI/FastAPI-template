@@ -1,19 +1,23 @@
+import logging
 import os
-from fastapi import FastAPI
+
+from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
-from starlette.requests import Request
+from fastapi.responses import HTMLResponse, JSONResponse
+from sqlalchemy import text
 import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
-from sentry_sdk.integrations.starlette import StarletteIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+from sentry_sdk.integrations.starlette import StarletteIntegration
 from sentry_sdk.integrations.threading import ThreadingIntegration
-import logging
+from starlette.requests import Request
 
+from src.database.database import engine
+from src.dependencies.basic import get_redis_client
 from src.routers.server import router
-from src.schemas.basic import TextOnly
+from src.schemas.basic import TextOnly, HealthCheck, ServiceStatus
 from src.utils.swagger import custom_swagger_ui_html
 
 # Initialize Sentry
@@ -96,6 +100,52 @@ async def custom_docs():
 @app.get("/", response_model=TextOnly)
 async def root():
     return TextOnly(text="Hello World")
+
+
+@app.get("/healthz", response_model=HealthCheck, tags=["Health"])
+async def health_check():
+    """
+    Health check endpoint that verifies MySQL and Redis connectivity.
+    Returns 200 if all services are healthy, 503 if any service is unhealthy.
+    """
+    mysql_status = ServiceStatus(status="healthy", message="Connected")
+    redis_status = ServiceStatus(status="healthy", message="Connected")
+    overall_healthy = True
+
+    # Check MySQL connection
+    try:
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+    except Exception as e:
+        mysql_status = ServiceStatus(status="unhealthy", message=f"Connection failed: {str(e)}")
+        overall_healthy = False
+
+    # Check Redis connection
+    try:
+        redis_gen = get_redis_client()
+        redis_client = next(redis_gen)
+        redis_client.ping()
+        try:
+            next(redis_gen)  # Trigger the finally block to close the connection
+        except StopIteration:
+            pass
+    except Exception as e:
+        redis_status = ServiceStatus(status="unhealthy", message=f"Connection failed: {str(e)}")
+        overall_healthy = False
+
+    health_response = HealthCheck(
+        status="healthy" if overall_healthy else "unhealthy",
+        mysql=mysql_status,
+        redis=redis_status
+    )
+
+    if overall_healthy:
+        return health_response
+    else:
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content=health_response.model_dump()
+        )
 
 
 @app.get("/elements", include_in_schema=False)
